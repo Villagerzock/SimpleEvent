@@ -19,11 +19,7 @@ import com.sun.tools.javac.code.Symtab;
 import com.sun.tools.javac.tree.JCTree.*;
 import com.sun.tools.javac.util.Context;
 import com.sun.tools.javac.util.Names;
-import net.villagerzock.AnnotationLibEventImpl;
-import net.villagerzock.Event;
 
-import javax.lang.model.element.TypeElement;
-import java.awt.datatransfer.FlavorEvent;
 import java.util.ArrayList;
 
 public class EventPlugin implements Plugin {
