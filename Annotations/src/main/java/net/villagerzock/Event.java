@@ -1,4 +1,3 @@
 package net.villagerzock;
 
-public @interface Event {
-}
+public @interface Event {}

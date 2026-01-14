@@ -1,1 +1,5 @@
 rootProject.name = 'SimpleEvent'
+include 'Annotations'
+include 'Compiler'
+include 'IntelliJ'
+include 'Testing'
