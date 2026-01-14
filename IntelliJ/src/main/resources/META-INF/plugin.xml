@@ -1,0 +1,30 @@
+<idea-plugin>
+    <!-- Eindeutige Plugin-ID -->
+    <id>net.villagerzock.simpleEventToolkit</id>
+
+    <!-- Anzeigename -->
+    <name>SimpleEvents Toolkit</name>
+
+    <!-- Hersteller -->
+    <vendor>
+        Villagerzock
+    </vendor>
+
+    <!-- Kurze Beschreibung -->
+    <description><![CDATA[
+	Provides PSI augmentation and error Highlighting for the SimpleEvents Library.
+	]]></description>
+
+    <!-- WICHTIG: Java-PSI verfügbar machen -->
+    <depends>com.intellij.modules.java</depends>
+
+    <!-- Optional aber empfohlen -->
+    <depends>com.intellij.modules.platform</depends>
+
+    <!-- Extension Registration -->
+    <extensions defaultExtensionNs="com.intellij">
+        <lang.psiAugmentProvider implementation="net.villagerzock.intelliJ.augment.AugmentProvider"/>
+        <implicitUsageProvider implementation="net.villagerzock.intelliJ.usage.UsageProvider"/>
+    </extensions>
+
+</idea-plugin>

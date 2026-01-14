@@ -75,7 +75,7 @@ public class EventPlugin implements Plugin {
                     JCExpression listenerExpr = maker.Select(maker.Ident(cls.name), listenerDecl.name);
 
 
-                    int flags = 0;
+                    int flags = Flags.FINAL;
                     flags |= getAccessFlag(methodDecl.mods);
                     if ((methodDecl.mods.flags & Flags.STATIC) != 0){
                         flags |= Flags.STATIC;
@@ -107,9 +107,6 @@ public class EventPlugin implements Plugin {
     private JCClassDecl createEventInterface(TreeMaker maker, Names names, JCMethodDecl methodDecl, Symtab symtab) {
         int flags = Flags.ABSTRACT;
         flags |= getAccessFlag(methodDecl.mods);
-        if ((methodDecl.mods.flags & Flags.STATIC) != 0){
-            flags |= Flags.STATIC;
-        }
 
         java.util.List<JCVariableDecl> params = new ArrayList<>();
         TreeCopier<?> copier = new TreeCopier<>(maker);
@@ -145,9 +142,6 @@ public class EventPlugin implements Plugin {
     private JCClassDecl createEventFieldClass(TreeMaker maker, Names names, JCMethodDecl methodDecl, Symtab symtab, JCExpression interfaceDecl){
         int flags = 0;
         flags |= getAccessFlag(methodDecl.mods);
-        if ((methodDecl.mods.flags & Flags.STATIC) != 0){
-            flags |= Flags.STATIC;
-        }
 
         java.util.List<JCVariableDecl> params = new ArrayList<>();
         TreeCopier<?> copier = new TreeCopier<>(maker);
@@ -188,7 +182,25 @@ public class EventPlugin implements Plugin {
                 foreachBody
         );
 
-        JCBlock block = maker.Block(0,List.of(foreachStatement));
+        java.util.List<JCStatement> blockStatements = new ArrayList<>();
+        blockStatements.add(foreachStatement);
+
+        for (JCAnnotation anno : methodDecl.mods.annotations){
+            if (anno.annotationType instanceof JCIdent expression){
+                if (expression.getName().toString().equals("net.villagerzock.Event") || expression.getName().toString().equals("Event")) {
+                    if (readValue(anno,false)){
+                        JCStatement clearStatement = maker.Exec(maker.Apply(
+                                List.nil(),
+                                maker.Select(maker.Select(maker.Ident(names._this),names.fromString("listeners")),names.fromString("clear")),
+                                List.nil()
+                        ));
+                        blockStatements.add(clearStatement);
+                    }
+                }
+            }
+        }
+
+        JCBlock block = maker.Block(0,List.from(blockStatements));
         JCMethodDecl emitMethod = maker.MethodDef(
                 maker.Modifiers(flags),
                 names.fromString("emit"),
@@ -243,5 +255,52 @@ public class EventPlugin implements Plugin {
             expression = maker.Select(expression,names.fromString(toDot[i]));
         }
         return expression;
+    }
+
+    /**
+     * Liest das boolean-Attribut "value" aus:
+     * - @Foo              -> defaultValue (z.B. false)
+     * - @Foo(true)        -> true
+     * - @Foo(value=true)  -> true
+     *
+     * @return Boolean (nie null), solange defaultValue gesetzt ist
+     */
+    public static boolean readValue(JCTree.JCAnnotation ann, boolean defaultValue) {
+        if (ann == null || ann.args == null || ann.args.isEmpty()) {
+            return defaultValue; // @Foo
+        }
+
+        // @Foo(true)  (implizit value)
+        if (ann.args.size() == 1 && !(ann.args.head instanceof JCTree.JCAssign)) {
+            Boolean b = asBooleanLiteralOrIdent(ann.args.head);
+            return b != null ? b : defaultValue;
+        }
+
+        // @Foo(value = true) (oder mehrere args)
+        for (JCTree.JCExpression e : ann.args) {
+            if (e instanceof JCTree.JCAssign a) {
+                // lhs ist normalerweise ein JCIdent "value"
+                String name = a.lhs.toString();
+                if ("value".equals(name)) {
+                    Boolean b = asBooleanLiteralOrIdent(a.rhs);
+                    return b != null ? b : defaultValue;
+                }
+            }
+        }
+
+        return defaultValue;
+    }
+
+    private static Boolean asBooleanLiteralOrIdent(JCTree.JCExpression expr) {
+        if (expr instanceof JCTree.JCLiteral lit) {
+            Object v = lit.getValue();
+            if (v instanceof Boolean b) return b;
+        }
+        if (expr instanceof JCTree.JCIdent id) {
+            String s = id.getName().toString();
+            if ("true".equals(s)) return Boolean.TRUE;
+            if ("false".equals(s)) return Boolean.FALSE;
+        }
+        return null;
     }
 }
