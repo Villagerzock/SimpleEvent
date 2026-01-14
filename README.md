@@ -8,6 +8,7 @@ you just need to annotate the method with **@Event**
 there is not yet a Maven Repository so you need to Compile yourself and add the Jar as A library
 
 ## Installation
+for the Installation its important to implement the Plugin the Right way so it gets Executed automatically, if you want to run your Program with for example the IntelliJ Run File System you'll need to Specify them in IntelliJ, if you use the IntelliJ Plugin said thing will be done Automatically as soon as my Library is installed in one or more Module/s, ofcourse only for that/those one or more Module/s
 
 **Gradle:**
 ```groovy
