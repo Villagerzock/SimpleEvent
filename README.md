@@ -3,7 +3,7 @@
 This library allows you to add really simple events to Java, it uses a JavaC Plugin to do so, similar to Lombok this Library uses that Plugin to Generate Fields and Methods
 All you do is write a Method, i personally like to make that method native so i dont have to add a body but thats on you
 making the method native is not a problem due to the method itself nolonger existing in the final compiled version
-you just need to annotate the method with @Event
+you just need to annotate the method with **@Event**
 
 there is not yet a Maven Repository so you need to Compile yourself and add the Jar as A library
 
