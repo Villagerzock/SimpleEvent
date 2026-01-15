@@ -28,6 +28,12 @@ tasks.withType(JavaCompile).configureEach {
     ]
 }
 ```
+```groovy
+dependencies {
+    compileOnly 'net.villagerzock.SimpleEvents:Compiler:1.0.0'
+    implementation 'net.villagerzock.SimpleEvents:Annotations:1.0.0'
+}
+```
 **Maven**
 ```xml
 <build>
