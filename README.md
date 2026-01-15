@@ -26,7 +26,7 @@ tasks.withType(JavaCompile).configureEach {
             "--add-exports=jdk.compiler/com.sun.tools.javac.util=ALL-UNNAMED",
     ]
     options.compilerArgs += [
-            "-Xplugin:net.villagerzock.Event",
+            "-Xplugin:net.villagerzock.compiler.EventPlugin",
     ]
 }
 ```
@@ -59,7 +59,7 @@ dependencies {
           <arg>-J--add-exports=jdk.compiler/com.sun.tools.javac.util=ALL-UNNAMED</arg>
 
           <!-- javac option -->
-          <arg>-Xplugin:net.villagerzock.Event</arg>
+          <arg>-Xplugin:net.villagerzock.compiler.EventPlugin</arg>
         </compilerArgs>
       </configuration>
     </plugin>
