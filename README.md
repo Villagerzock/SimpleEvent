@@ -86,3 +86,5 @@ dependencies {
 </dependencies>
 
 ```
+
+> You will also need the Repository at http://45.93.249.136:8080/
