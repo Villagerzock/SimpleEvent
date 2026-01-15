@@ -65,3 +65,22 @@ dependencies {
 </build>
 
 ```
+```xml
+<dependencies>
+  <!-- Gradle: compileOnly -->
+  <dependency>
+    <groupId>net.villagerzock.SimpleEvents</groupId>
+    <artifactId>Compiler</artifactId>
+    <version>1.0.0</version>
+    <scope>provided</scope>
+  </dependency>
+
+  <!-- Gradle: implementation -->
+  <dependency>
+    <groupId>net.villagerzock.SimpleEvents</groupId>
+    <artifactId>Annotations</artifactId>
+    <version>1.0.0</version>
+  </dependency>
+</dependencies>
+
+```
