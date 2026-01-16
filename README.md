@@ -7,6 +7,10 @@ you just need to annotate the method with **@Event**
 
 there is not yet a Maven Repository so you need to Compile yourself and add the Jar as A library
 
+## IntelliJ Plugin
+There is an IntelliJ Plugin for Highligting in the IDE.
+<div id="rc-page"><main><div style="display: inline-block;"><div class="ideButton--lDjVRlr rs-text-2 rs-text-2_theme_light" data-control-type="install" role="button" tabindex="0"><a class="ideText--wkfD_FU wt-text-2" href="https://plugins.jetbrains.com/plugin/29780-simpleevents-toolkit" rel="noopener noreferrer" target="_blank">Get from Marketplace</a></div></div></main></div>
+
 ## Installation
 for the Installation its important to implement the Plugin the Right way so it gets Executed automatically, if you want to run your Program with for example the IntelliJ Run File System you'll need to Specify them in IntelliJ, if you use the IntelliJ Plugin said thing will be done Automatically as soon as my Library is installed in one or more Module/s, ofcourse only for that/those one or more Module/s
 
