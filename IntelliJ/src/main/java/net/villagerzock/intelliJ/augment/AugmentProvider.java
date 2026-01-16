@@ -94,7 +94,7 @@ public class AugmentProvider extends PsiAugmentProvider {
 
         for (PsiMethod m : eventsByName.values()){
             String baseName = m.getName();
-            String generatedTypeName = "event";
+            String generatedTypeName = "eventObject$" + m.getName();
 
             PsiClass fieldClass;
             LightPsiClassBuilder listenerInterface = new LightPsiClassBuilder(owner, "eventListener$"+m.getName()){
