@@ -7,8 +7,15 @@ you just need to annotate the method with **@Event**
 
 there is not yet a Maven Repository so you need to Compile yourself and add the Jar as A library
 
+## IntelliJ Plugin
+There is an IntelliJ Plugin for Highligting in the IDE.
+
+[Get From Marketplace](https://plugins.jetbrains.com/plugin/29780-simpleevents-toolkit)
+
 ## Installation
 for the Installation its important to implement the Plugin the Right way so it gets Executed automatically, if you want to run your Program with for example the IntelliJ Run File System you'll need to Specify them in IntelliJ, if you use the IntelliJ Plugin said thing will be done Automatically as soon as my Library is installed in one or more Module/s, ofcourse only for that/those one or more Module/s
+
+![](http://45.93.249.136:8080/api/badge/latest/releases/net/villagerzock/SimpleEvents/Compiler?name=SimpleEvents&prefix=v)
 
 **Gradle:**
 ```groovy
@@ -30,8 +37,8 @@ tasks.withType(JavaCompile).configureEach {
 ```
 ```groovy
 dependencies {
-    compileOnly 'net.villagerzock.SimpleEvents:Compiler:1.0.0'
-    implementation 'net.villagerzock.SimpleEvents:Annotations:1.0.0'
+    compileOnly 'net.villagerzock.SimpleEvents:Compiler:${simple_events_version}'
+    implementation 'net.villagerzock.SimpleEvents:Annotations:${simple_events_version}'
 }
 ```
 **Maven**
@@ -71,7 +78,7 @@ dependencies {
   <dependency>
     <groupId>net.villagerzock.SimpleEvents</groupId>
     <artifactId>Compiler</artifactId>
-    <version>1.0.0</version>
+    <version>${simple_events_version}</version>
     <scope>provided</scope>
   </dependency>
 
@@ -79,8 +86,10 @@ dependencies {
   <dependency>
     <groupId>net.villagerzock.SimpleEvents</groupId>
     <artifactId>Annotations</artifactId>
-    <version>1.0.0</version>
+    <version>${simple_events_version}</version>
   </dependency>
 </dependencies>
 
 ```
+
+> You will also need the Repository at http://45.93.249.136:8080/ with Allowed Insecure Protocol
