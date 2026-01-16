@@ -8,7 +8,9 @@ public class Main {
 
     public static void main(String[] args) {
         System.out.println("Starting...");
-        foo.addListener(System.out::println);
+        foo.addListener(bar ->{
+            System.out.println("Running Event foo and value is: " + bar);
+        });
         foo.emit("Hii");
         foo.emit("Hiiiiiii");
     }

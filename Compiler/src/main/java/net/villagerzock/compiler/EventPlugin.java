@@ -113,13 +113,15 @@ public class EventPlugin implements Plugin {
 
         JCExpression returnType = maker.Type(symtab.voidType);
 
+        JCExpression throwableExpr = dotTogether(maker,names,"java","lang","Throwable");
+
         JCMethodDecl interfaceMethod = maker.MethodDef(
                 maker.Modifiers(flags),
                 names.fromString("run"),
                 returnType,
                 List.nil(),
                 List.from(params),
-                List.nil(),
+                List.of(throwableExpr),
                 null,
                 null
         );
@@ -170,7 +172,32 @@ public class EventPlugin implements Plugin {
 
         JCStatement runCall = maker.Exec(runExpression);
 
-        JCStatement foreachBody = maker.Block(0, List.of(runCall));
+        JCExpression throwableExpr = dotTogether(maker,names,"java","lang","Throwable");
+        JCVariableDecl catchVar = maker.VarDef(
+                maker.Modifiers(0),
+                names.fromString("ignored"),
+                throwableExpr,
+                null
+        );
+
+        JCExpression catchExpr = maker.Select(maker.Ident(names._this), names.fromString("catchException"));
+        JCStatement catchCall = maker.Exec(maker.Apply(
+                List.nil(),
+                catchExpr,
+                List.of(maker.Ident(names.fromString("ignored")), maker.Literal(methodDecl.name.toString()))
+        ));
+
+        JCBlock catchBlock = maker.Block(
+                0,
+                List.of(catchCall)
+        );
+        JCStatement statement = maker.Try(
+                maker.Block(0,List.of(runCall)),
+                List.of(maker.Catch(catchVar, catchBlock)),
+                null
+        );
+
+        JCStatement foreachBody = maker.Block(0, List.of(statement));
 
         JCStatement foreachStatement = maker.ForeachLoop(
                 listenerDecl,
@@ -192,6 +219,7 @@ public class EventPlugin implements Plugin {
                         ));
                         blockStatements.add(clearStatement);
                     }
+                    break;
                 }
             }
         }

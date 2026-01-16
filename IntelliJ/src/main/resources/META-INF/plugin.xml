@@ -25,6 +25,16 @@
     <extensions defaultExtensionNs="com.intellij">
         <lang.psiAugmentProvider implementation="net.villagerzock.intelliJ.augment.AugmentProvider"/>
         <implicitUsageProvider implementation="net.villagerzock.intelliJ.usage.UsageProvider"/>
+        <codeInsight.daemonBoundCodeVisionProvider implementation="net.villagerzock.intelliJ.codeVision.ListenersCodeVision"/>
+        <codeInsight.daemonBoundCodeVisionProvider implementation="net.villagerzock.intelliJ.codeVision.EmittersCodeVision"/>
+        <completion.contributor language="JAVA" implementationClass="net.villagerzock.intelliJ.completion.EventMethodCompletionFilter"/>
+        <localInspection
+                language="JAVA"
+                shortName="EventMethodCall"
+                displayName="@Event method call"
+                groupName="Villagerzock"
+                enabledByDefault="true"
+                implementationClass="net.villagerzock.intelliJ.error.EventMethodCallInspection"/>
     </extensions>
 
 </idea-plugin>

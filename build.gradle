@@ -1,9 +1,10 @@
 plugins {
     id 'java'
+    id 'maven-publish'
 }
 
-group = 'net.villagerzock'
-version = '1.0-SNAPSHOT'
+group = 'net.villagerzock.SimpleEvents'
+version = project.PROJECT_VERSION
 
 repositories {
     mavenCentral()
@@ -17,4 +18,81 @@ dependencies {
 
 test {
     useJUnitPlatform()
+}
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            from components.java
+
+            // optional: sources/javadoc
+            // artifact tasks.named('sourcesJar')
+            // artifact tasks.named('javadocJar')
+
+            // optional: wenn du ein fatjar publishen willst (shadowJar):
+            // artifact(tasks.named('shadowJar')) {
+            //     classifier = null // ersetzt das normale jar
+            // }
+        }
+    }
+
+    repositories {
+        maven {
+            allowInsecureProtocol=true
+            name = "internal"
+
+            // Repo URLs (Reposilite / Nexus / Artifactory etc.)
+            def releasesRepo = "http://45.93.249.136:8080//releases"
+            def snapshotsRepo = "http://45.93.249.136:8080/snapshots"
+
+            // Snapshot/Release automatisch wählen
+            url = uri(version.toString().endsWith("-SNAPSHOT") ? snapshotsRepo : releasesRepo)
+
+            // Auth: aus gradle.properties ODER Environment
+            credentials {
+                System.out.println("REPO_USER: ${project.REPO_USER}")
+                username = project.REPO_USER
+                password = project.REPO_PASS
+            }
+
+            // Basic Auth erzwingen (hilft bei manchen Servern)
+            authentication {
+                basic(BasicAuthentication)
+            }
+
+            // optional: falls du HTTP nutzt und Gradle meckert (je nach Setup/Gradle-Version)
+            // allowInsecureProtocol = true
+        }
+    }
+}
+
+subprojects {
+    // nur wenn das Subprojekt Java hat
+    plugins.withId('java') {
+        apply plugin: 'maven-publish'
+
+        publishing {
+            publications {
+                mavenJava(MavenPublication) {
+                    from components.java
+                }
+            }
+            repositories {
+                maven {
+
+                    allowInsecureProtocol=true
+                    name = "internal"
+                    def releasesRepo = "http://45.93.249.136:8080//releases"
+                    def snapshotsRepo = "http://45.93.249.136:8080/snapshots"
+                    url = uri(project.version.toString().endsWith("-SNAPSHOT") ? snapshotsRepo : releasesRepo)
+
+                    credentials {
+                        username = project.REPO_USER
+                        password = project.REPO_PASS
+                    }
+                    authentication { basic(BasicAuthentication) }
+                }
+            }
+        }
+    }
 }

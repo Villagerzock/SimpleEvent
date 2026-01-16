@@ -13,4 +13,9 @@ public class AnnotationLibEventImpl<T> {
         if (listener == null) return;
         listeners.remove(listener);
     }
+
+    protected void catchException(Throwable throwable, String eventName){
+        System.err.println("An error occured while running event " + eventName);
+        throwable.printStackTrace();
+    }
 }
