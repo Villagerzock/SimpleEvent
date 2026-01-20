@@ -1,47 +1,100 @@
 # Simple Events
 
-This library allows you to add really simple events to Java, it uses a JavaC Plugin to do so, similar to Lombok this Library uses that Plugin to Generate Fields and Methods
-All you do is write a Method, i personally like to make that method native so i dont have to add a body but thats on you
-making the method native is not a problem due to the method itself nolonger existing in the final compiled version
-you just need to annotate the method with **@Event**
+**Simple Events** adds *real* events to Java using a **javac compiler plugin** – similar in spirit to Lombok, but focused entirely on events.
 
-there is not yet a Maven Repository so you need to Compile yourself and add the Jar as A library
+You declare an event using a normal Java method annotated with `@Event`.
+At compile time, the method is **removed** and replaced with generated fields, listener interfaces, and emit logic.
 
-## IntelliJ Plugin
-There is an IntelliJ Plugin for Highligting in the IDE.
+No runtime magic.
+No bytecode weaving at runtime.
+Everything is generated at **compile time**.
 
-[Get From Marketplace](https://plugins.jetbrains.com/plugin/29780-simpleevents-toolkit)
+---
+
+## Example
+
+```java
+@Event
+public static native void foo(String value);
+```
+
+The method **does not exist** in the final bytecode.
+
+Instead, the compiler generates an event object which you can use like this:
+
+```java
+foo.addListener(v -> System.out.println("Listener: " + v));
+foo.emit("Hello");
+```
+
+Declaring the method as `native` is recommended (but optional) to avoid writing a body.
+This is safe because the method is removed entirely during compilation.
+
+---
+
+## IntelliJ IDEA Plugin
+
+An IntelliJ plugin is available and **highly recommended**.
+
+It provides:
+
+- Syntax highlighting
+- CodeVision hints (listener / emitter counts)
+- Navigation to listeners and emit calls
+- Error reporting for invalid usage
+
+Get it from the JetBrains Marketplace:
+https://plugins.jetbrains.com/plugin/29780-simpleevents-toolkit
+
+---
 
 ## Installation
-for the Installation its important to implement the Plugin the Right way so it gets Executed automatically, if you want to run your Program with for example the IntelliJ Run File System you'll need to Specify them in IntelliJ, if you use the IntelliJ Plugin said thing will be done Automatically as soon as my Library is installed in one or more Module/s, ofcourse only for that/those one or more Module/s
+
+**Important**
+
+Simple Events uses a **javac compiler plugin**.
+It must be configured correctly so the compiler executes it automatically.
+
+If you use IntelliJ IDEA *without* the plugin, you must configure the compiler options manually.
+If the IntelliJ plugin is installed, this is handled automatically per module.
+
+---
 
 ![](http://45.93.249.136:8080/api/badge/latest/releases/net/villagerzock/SimpleEvents/Compiler?name=SimpleEvents&prefix=v)
 
-**Gradle:**
+---
+
+## Gradle
+
 ```groovy
 tasks.withType(JavaCompile).configureEach {
     options.fork = true
     options.forkOptions.jvmArgs += [
-            "--add-exports=jdk.compiler/com.sun.tools.javac.api=ALL-UNNAMED",
-            "--add-exports=jdk.compiler/com.sun.tools.javac.code=ALL-UNNAMED",
-            "--add-exports=jdk.compiler/com.sun.tools.javac.comp=ALL-UNNAMED",
-            "--add-exports=jdk.compiler/com.sun.tools.javac.model=ALL-UNNAMED",
-            "--add-exports=jdk.compiler/com.sun.tools.javac.processing=ALL-UNNAMED",
-            "--add-exports=jdk.compiler/com.sun.tools.javac.tree=ALL-UNNAMED",
-            "--add-exports=jdk.compiler/com.sun.tools.javac.util=ALL-UNNAMED",
+        "--add-exports=jdk.compiler/com.sun.tools.javac.api=ALL-UNNAMED",
+        "--add-exports=jdk.compiler/com.sun.tools.javac.code=ALL-UNNAMED",
+        "--add-exports=jdk.compiler/com.sun.tools.javac.comp=ALL-UNNAMED",
+        "--add-exports=jdk.compiler/com.sun.tools.javac.model=ALL-UNNAMED",
+        "--add-exports=jdk.compiler/com.sun.tools.javac.processing=ALL-UNNAMED",
+        "--add-exports=jdk.compiler/com.sun.tools.javac.tree=ALL-UNNAMED",
+        "--add-exports=jdk.compiler/com.sun.tools.javac.util=ALL-UNNAMED",
     ]
     options.compilerArgs += [
-            "-Xplugin:net.villagerzock.Event",
+        "-Xplugin:net.villagerzock.Event",
     ]
 }
 ```
+
 ```groovy
 dependencies {
-    compileOnly 'net.villagerzock.SimpleEvents:Compiler:${simple_events_version}'
-    implementation 'net.villagerzock.SimpleEvents:Annotations:${simple_events_version}'
+    compileOnly "net.villagerzock.SimpleEvents:Compiler:${simple_events_version}"
+    implementation "net.villagerzock.SimpleEvents:Annotations:${simple_events_version}"
 }
 ```
-**Maven**
+
+---
+
+## Maven
+
 ```xml
 <build>
   <plugins>
@@ -54,7 +107,6 @@ dependencies {
         <fork>true</fork>
 
         <compilerArgs>
-          <!-- JVM args for the forked javac process -->
           <arg>-J--add-exports=jdk.compiler/com.sun.tools.javac.api=ALL-UNNAMED</arg>
           <arg>-J--add-exports=jdk.compiler/com.sun.tools.javac.code=ALL-UNNAMED</arg>
           <arg>-J--add-exports=jdk.compiler/com.sun.tools.javac.comp=ALL-UNNAMED</arg>
@@ -62,19 +114,16 @@ dependencies {
           <arg>-J--add-exports=jdk.compiler/com.sun.tools.javac.processing=ALL-UNNAMED</arg>
           <arg>-J--add-exports=jdk.compiler/com.sun.tools.javac.tree=ALL-UNNAMED</arg>
           <arg>-J--add-exports=jdk.compiler/com.sun.tools.javac.util=ALL-UNNAMED</arg>
-
-          <!-- javac option -->
           <arg>-Xplugin:net.villagerzock.Event</arg>
         </compilerArgs>
       </configuration>
     </plugin>
   </plugins>
 </build>
-
 ```
+
 ```xml
 <dependencies>
-  <!-- Gradle: compileOnly -->
   <dependency>
     <groupId>net.villagerzock.SimpleEvents</groupId>
     <artifactId>Compiler</artifactId>
@@ -82,14 +131,12 @@ dependencies {
     <scope>provided</scope>
   </dependency>
 
-  <!-- Gradle: implementation -->
   <dependency>
     <groupId>net.villagerzock.SimpleEvents</groupId>
     <artifactId>Annotations</artifactId>
     <version>${simple_events_version}</version>
   </dependency>
 </dependencies>
-
 ```
 
 > You will also need the Repository at http://45.93.249.136:8080/ with Allowed Insecure Protocol
