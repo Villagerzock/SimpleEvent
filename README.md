@@ -56,7 +56,7 @@ Simple Events uses a **javac compiler plugin**.
 It must be configured correctly so the compiler executes it automatically.
 
 If you use IntelliJ IDEA *without* the plugin, you must configure the compiler options manually.
-If the IntelliJ plugin is installed, this is handled automatically per module.
+If the IntelliJ plugin is installed, this is handled automatically per module. (With atleast Plugin Version 1.0.2 or newer)
 
 ---
 
